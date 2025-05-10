@@ -2,29 +2,34 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Order;
-use App\Models\Product;
-use App\Models\Cart;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Event;
+use App\Repositories\OrderRepositoryInterface;
+use App\Repositories\CartRepositoryInterface;
 use App\Events\OrderPlaced;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
+    protected $orders;
+    protected $carts;
+
+    public function __construct(OrderRepositoryInterface $orders, CartRepositoryInterface $carts)
+    {
+        $this->orders = $orders;
+        $this->carts = $carts;
+    }
+
     public function index()
     {
-        $orders = Order::with('products')
-            ->where('user_id', Auth::id())
-            ->latest()
-            ->get();
-
+        $orders = $this->orders->all(request());
         return response()->json($orders);
     }
 
-    public function show(Order $order)
+    public function show($id)
     {
+        $order = $this->orders->find($id);
+        
         if ($order->user_id !== Auth::id()) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
@@ -46,10 +51,9 @@ class OrderController extends Controller
         try {
             DB::beginTransaction();
 
-            // Get cart items
-            $cartItems = Cart::with('product')
-                ->where('user_id', Auth::id())
-                ->get();
+            // Get cart items for the user
+            $userId = Auth::id();
+            $cartItems = $this->carts->getUserCart($userId);
 
             if ($cartItems->isEmpty()) {
                 throw new \Exception('Cart is empty');
@@ -79,8 +83,8 @@ class OrderController extends Controller
             }
 
             // Create order
-            $order = Order::create([
-                'user_id' => Auth::id(),
+            $order = $this->orders->create([
+                'user_id' => $userId,
                 'total_amount' => $totalAmount,
                 'status' => 'pending',
                 'shipping_address' => $request->shipping_address,
@@ -94,13 +98,13 @@ class OrderController extends Controller
                 ]);
             }
 
-            // Clear the cart
-            Cart::where('user_id', Auth::id())->delete();
+            // Clear the cart for the user
+            $this->carts->clearCart($userId);
 
             DB::commit();
 
             // Trigger order placed event
-            Event::dispatch(new OrderPlaced($order));
+            event(new OrderPlaced($order));
 
             return response()->json([
                 'message' => 'Order created successfully',

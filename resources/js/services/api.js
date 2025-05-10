@@ -5,7 +5,6 @@ const api = axios.create({
     baseURL: '/api',
     headers: {
         'Accept': 'application/json',
-        'Content-Type': 'application/json',
     }
 });
 
@@ -44,8 +43,9 @@ export const authAPI = {
 
 // Products API calls
 export const productsAPI = {
-    getAll: () => api.get('/products'),
+    getAll: (page = 1) => api.get(`/products?page=${page}`),
     getById: (id) => api.get(`/products/${id}`),
+    create: (data) => api.post('/products', data),
 };
 
 // Orders API calls

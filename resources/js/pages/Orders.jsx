@@ -12,7 +12,7 @@ import {
 } from '@mui/material';
 import MainLayout from '../Layouts/MainLayout';
 import { orderAPI } from '../services/api';
-import ProductImage from '../components/ProductImage';
+import CartItem from '../components/CartItem';
 
 const Orders = () => {
     const [orders, setOrders] = useState([]);
@@ -107,42 +107,21 @@ const Orders = () => {
                                         />
                                     </Box>
                                     <Divider sx={{ my: 2 }} />
-                                    <Grid container spacing={2}>
+                                    <Box>
                                         {order.products.map((product) => (
-                                            <Grid item xs={12} key={product.id}>
-                                                <Box
-                                                    sx={{
-                                                        display: 'flex',
-                                                        justifyContent: 'space-between',
-                                                        alignItems: 'center',
-                                                    }}
-                                                >
-                                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                                                        <ProductImage
-                                                            src={product.image_url}
-                                                            alt={product.name}
-                                                            width={50}
-                                                            height={50}
-                                                        />
-                                                        <Box>
-                                                            <Typography variant="subtitle1">
-                                                                {product.name}
-                                                            </Typography>
-                                                            <Typography
-                                                                variant="body2"
-                                                                color="text.secondary"
-                                                            >
-                                                                Quantity: {product.pivot.quantity}
-                                                            </Typography>
-                                                        </Box>
-                                                    </Box>
-                                                    <Typography>
-                                                        ${formatPrice(product.pivot.price_at_time * product.pivot.quantity)}
-                                                    </Typography>
-                                                </Box>
-                                            </Grid>
+                                            <CartItem
+                                                key={product.id}
+                                                item={{
+                                                    ...product,
+                                                    quantity: product.pivot.quantity,
+                                                    price: product.pivot.price_at_time,
+                                                }}
+                                                readOnly={true}
+                                                showActions={false}
+                                                showRemove={false}
+                                            />
                                         ))}
-                                    </Grid>
+                                    </Box>
                                     <Divider sx={{ my: 2 }} />
                                     <Box
                                         sx={{

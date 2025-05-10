@@ -15,6 +15,7 @@ import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
 import Orders from './pages/Orders';
 import OrderDetails from './pages/OrderDetails';
+import AddProduct from './pages/AddProduct';
 
 // Protected Route component
 const PrivateRoute = ({ children }) => {
@@ -27,60 +28,61 @@ const PrivateRoute = ({ children }) => {
     return isAuthenticated ? children : <Navigate to="/login" />;
 };
 
-function App() {
-    return (
-        <ThemeProvider theme={theme}>
-            <CssBaseline />
-            <Router>
-                <AuthProvider>
-                    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-                        <Navbar />
-                        <Box component="main" sx={{ flexGrow: 1 }}>
-                            <Routes>
-                                <Route path="/login" element={<Login />} />
-                                <Route path="/products" element={<Products />} />
-                                <Route path="/products/:id" element={<ProductDetails />} />
-                                <Route
-                                    path="/cart"
-                                    element={
-                                        <PrivateRoute>
-                                            <Cart />
-                                        </PrivateRoute>
-                                    }
-                                />
-                                <Route
-                                    path="/checkout"
-                                    element={
-                                        <PrivateRoute>
-                                            <Checkout />
-                                        </PrivateRoute>
-                                    }
-                                />
-                                <Route
-                                    path="/orders"
-                                    element={
-                                        <PrivateRoute>
-                                            <Orders />
-                                        </PrivateRoute>
-                                    }
-                                />
-                                <Route
-                                    path="/orders/:id"
-                                    element={
-                                        <PrivateRoute>
-                                            <OrderDetails />
-                                        </PrivateRoute>
-                                    }
-                                />
-                                <Route path="/" element={<Navigate to="/products" />} />
-                            </Routes>
-                        </Box>
+const App = () => (
+    <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Router>
+            <AuthProvider>
+                <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+                    <Navbar />
+                    <Box component="main" sx={{ flexGrow: 1 }}>
+                        <Routes>
+                            <Route path="/login" element={<Login />} />
+                            <Route path="/products" element={<Products />} />
+                            <Route path="/products/:id" element={<ProductDetails />} />
+                            <Route path="/products/new" element={<AddProduct />} />
+                            <Route
+                                path="/cart"
+                                element={
+                                    <PrivateRoute>
+                                        <Cart />
+                                    </PrivateRoute>
+                                }
+                            />
+                            <Route
+                                path="/checkout"
+                                element={
+                                    <PrivateRoute>
+                                        <Checkout />
+                                    </PrivateRoute>
+                                }
+                            />
+                            <Route
+                                path="/orders"
+                                element={
+                                    <PrivateRoute>
+                                        <Orders />
+                                    </PrivateRoute>
+                                }
+                            />
+                            <Route
+                                path="/orders/:id"
+                                element={
+                                    <PrivateRoute>
+                                        <OrderDetails />
+                                    </PrivateRoute>
+                                }
+                            />
+                            <Route path="/" element={<Navigate to="/products" />} />
+                        </Routes>
                     </Box>
-                </AuthProvider>
-            </Router>
-        </ThemeProvider>
-    );
-}
+                </Box>
+            </AuthProvider>
+        </Router>
+    </ThemeProvider>
+);
+
+export default App;
 
 // Create root and render
 const container = document.getElementById('app');
