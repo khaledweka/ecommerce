@@ -55,6 +55,17 @@ class ProductSeeder extends Seeder
         }
 
         // Create additional random products
-        Product::factory()->count(10)->create();
+        $categories = ['T-shirts', 'Polo', 'Jeans', 'Shirts'];
+
+        for ($i = 0; $i < 20; $i++) {
+            Product::create([
+                'name' => 'Product ' . ($i + 1),
+                'category' => $categories[array_rand($categories)],
+                'description' => 'Description for Product ' . ($i + 1),
+                'price' => rand(10, 1000),
+                'stock' => rand(10, 200),
+                'image' => 'product-' . ($i + 1) . '.jpg',
+            ]);
+        }
     }
 } 

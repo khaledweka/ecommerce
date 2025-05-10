@@ -17,6 +17,8 @@ import {
     Logout as LogoutIcon,
 } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
+import { Link } from 'react-router-dom';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
 const Navbar = () => {
     const { isAuthenticated, logout, user } = useAuth();
@@ -28,11 +30,17 @@ const Navbar = () => {
     };
 
     return (
-        <AppBar position="sticky">
+        <AppBar position="sticky" color="default" elevation={1} sx={{ backgroundColor: '#fff', color: '#111' }}>
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        <Link to="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
+                            <img src="/images/logo.png" alt="izam logo" style={{ height: 36, marginRight: 12 }} />
+                        </Link>
+                    </Box>
+
                     {/* Logo and Brand */}
-                    <Typography
+                    {/* <Typography
                         variant="h6"
                         component={RouterLink}
                         to="/"
@@ -41,21 +49,21 @@ const Navbar = () => {
                             display: 'flex',
                             alignItems: 'center',
                             textDecoration: 'none',
-                            color: 'inherit',
+                            color: '#111',
                             fontWeight: 700,
                         }}
                     >
-                        <ProductsIcon sx={{ mr: 1 }} />
+                        <ProductsIcon sx={{ mr: 1, color: '#111' }} />
                         E-Commerce
-                    </Typography>
+                    </Typography> */}
 
                     {/* Navigation Links */}
                     <Box sx={{ flexGrow: 1, display: 'flex', gap: 2 }}>
                         <Button
                             component={RouterLink}
                             to="/products"
-                            color="inherit"
-                            startIcon={<ProductsIcon />}
+                            sx={{ color: '#111' }}
+                            startIcon={<ProductsIcon sx={{ color: '#111' }} />}
                         >
                             Products
                         </Button>
@@ -63,11 +71,21 @@ const Navbar = () => {
                             <>
                                 <Button
                                     component={RouterLink}
+                                    to="/products/new"
+                                    variant="contained"
+                                    color="primary"
+                                    startIcon={<AddCircleOutlineIcon />}
+                                    sx={{ ml: 2, fontWeight: 600 }}
+                                >
+                                    Sell Your Product
+                                </Button>
+                                <Button
+                                    component={RouterLink}
                                     to="/cart"
-                                    color="inherit"
+                                    sx={{ color: '#111' }}
                                     startIcon={
                                         <Badge badgeContent={0} color="error">
-                                            <CartIcon />
+                                            <CartIcon sx={{ color: '#111' }} />
                                         </Badge>
                                     }
                                 >
@@ -76,8 +94,8 @@ const Navbar = () => {
                                 <Button
                                     component={RouterLink}
                                     to="/orders"
-                                    color="inherit"
-                                    startIcon={<OrdersIcon />}
+                                    sx={{ color: '#111' }}
+                                    startIcon={<OrdersIcon sx={{ color: '#111' }} />}
                                 >
                                     Orders
                                 </Button>
@@ -89,23 +107,24 @@ const Navbar = () => {
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                         {isAuthenticated ? (
                             <>
-                                <Typography variant="body2" sx={{ mr: 1 }}>
+                                <Typography variant="body2" sx={{ mr: 1, color: '#111' }}>
                                     {user?.name}
                                 </Typography>
                                 <IconButton
-                                    color="inherit"
+                                    sx={{ color: '#111' }}
                                     onClick={handleLogout}
                                     title="Logout"
                                 >
-                                    <LogoutIcon />
+                                    <LogoutIcon sx={{ color: '#111' }} />
                                 </IconButton>
                             </>
                         ) : (
                             <Button
                                 component={RouterLink}
                                 to="/login"
-                                color="inherit"
-                                variant="outlined"
+                                variant="contained"
+                                color="primary"
+                                sx={{ fontWeight: 600 }}
                             >
                                 Login
                             </Button>
