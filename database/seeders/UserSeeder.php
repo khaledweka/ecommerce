@@ -29,7 +29,5 @@ class UserSeeder extends Seeder
             'email_verified_at' => now(),
         ]);
 
-        // Create additional test users
-        User::factory()->count(5)->create();
     }
 } 
